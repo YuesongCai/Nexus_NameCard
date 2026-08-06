@@ -1,0 +1,115 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* The single most valuable action on the page gets the only lime fill above the fold. */
+.save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-accent);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.save:active {
+  transform: translateY(1px) scale(0.995);
+  box-shadow: 0 2px 8px rgba(143, 217, 28, 0.24);
+}
+
+.save svg {
+  width: 17px;
+  height: 17px;
+}
+
+.rail {
+  display: grid;
+  grid-template-columns: repeat(var(--rail-count, 4), 1fr);
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 4px 11px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-panel);
+  color: var(--text);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.tile:active {
+  transform: translateY(1px);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+
+/* Ink, not lime: lime glyphs on a light tile fall below any usable contrast ratio. */
+.tile svg {
+  width: 19px;
+  height: 19px;
+  color: var(--text);
+}
+
+.tileLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.extraPhones {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 2px 4px 0;
+}
+
+.extraPhones li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.extraPhones a {
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--line);
+}
+
+.extraPhones a:active {
+  color: var(--text);
+}
+
+.phoneLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}

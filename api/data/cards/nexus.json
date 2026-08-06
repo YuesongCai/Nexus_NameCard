@@ -1,0 +1,24 @@
+{
+  "slug": "nexus",
+  "variant": "standard",
+  "coBrand": null,
+  "name": { "en": "Nexus", "zh": "Nexus" },
+  "title": {
+    "en": "The AI-native wealth operating system for EAMs & IFAs",
+    "zh": "为 EAM / IFA 打造的 AI 原生财富管理操作系统"
+  },
+  "org": { "en": "A member of Noah Holdings", "zh": "诺亚控股成员企业" },
+  "location": { "en": "Hong Kong · Singapore · New York", "zh": "香港 · 新加坡 · 纽约" },
+  "contacts": {
+    "whatsapp": null,
+    "phones": [],
+    "email": "hello@noahnexus.ai",
+    "linkedin": "https://www.linkedin.com/company/noah-nexus",
+    "website": "https://noahnexus.ai"
+  },
+  "licence": null,
+  "memberLine": {
+    "en": "A member of Noah Holdings (US: NOAH | HK: 6686)",
+    "zh": "诺亚控股成员企业（美股 NOAH | 港股 6686）"
+  }
+}

@@ -1,0 +1,85 @@
+/*
+ * Nexus card — design tokens.
+ *
+ * Palette values come from noahnexus.ai and the printed card spec (cream #F4F1EA,
+ * ink #0E0F0C, lime #B8FF3A).
+ *
+ * The page sits on the brand's cream stock, which means white is *above* the page, not
+ * below it — so the depth order runs: cream ground → white panels → ink card. The identity
+ * block is the "Inverted Ink" direction from the card concepts: near-black on cream is the
+ * highest-contrast object available, so the person leads the page without a single extra
+ * decoration.
+ *
+ * Contrast note: lime on cream is ~1.4:1 and unreadable, so on light surfaces lime only
+ * ever appears as a fill behind ink text. On the ink card it flips — there it is a
+ * legitimate text/rule colour, which is why the card has its own accent token.
+ */
+
+:root {
+  /* Surfaces — cream ground, white lifts */
+  --bg: #f4f1ea;
+  --bg-warm: #efece3;
+  --surface: #ffffff;
+  --surface-2: #faf8f3;
+  --surface-sunk: #f6f4ef;
+
+  /* Ink */
+  --text: #14150f;
+  --text-dim: #5c594f;
+  --text-faint: #8b8779;
+  --text-ghost: rgba(20, 21, 15, 0.34);
+
+  /* Lines */
+  --line: rgba(20, 21, 15, 0.09);
+  --line-strong: rgba(20, 21, 15, 0.17);
+
+  /* Accent — fills only, on light surfaces */
+  --accent: #b8ff3a;
+  --accent-deep: #8fd91c;
+  --accent-ink: #0e0f0c;
+  --accent-line: #2f7d54;
+
+  /* Inverted elements on a light page (user bubbles, badges, toast) */
+  --inverse: #14150f;
+  --inverse-text: #f4f1ea;
+
+  /* The identity card — inked stock */
+  --card-bg: #14150f;
+  --card-bg-lift: #1c1d17;
+  --card-fg: #f4f1ea;
+  --card-fg-dim: rgba(244, 241, 234, 0.6);
+  --card-fg-faint: rgba(244, 241, 234, 0.38);
+  --card-line: rgba(244, 241, 234, 0.14);
+  --card-rule: #b8ff3a;
+
+  /* Type */
+  --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Rhythm */
+  --gutter: 20px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shell-max: 480px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.32s;
+
+  /* Elevation */
+  --shadow-card: 0 22px 50px rgba(20, 21, 15, 0.22), 0 3px 10px rgba(20, 21, 15, 0.12);
+  --shadow-panel: 0 2px 14px rgba(20, 21, 15, 0.05);
+  --shadow-soft: 0 8px 26px rgba(20, 21, 15, 0.16);
+  --shadow-accent: 0 6px 20px rgba(143, 217, 28, 0.32);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-base: 0.01ms;
+  }
+}

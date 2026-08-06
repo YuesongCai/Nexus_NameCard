@@ -1,0 +1,70 @@
+name: Deploy card to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'api/data/cards/**'
+      - 'api/src/nexus_card/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+# One deploy at a time; let an in-flight run finish rather than shipping a half state.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_STATIC: '1'
+      VITE_BASE: /Nexus_NameCard/
+      VITE_SITE_URL: https://yuesongcai.github.io
+      VITE_DEFAULT_SLUG: grantpan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # The card JSON, greetings, starter chips and vCards are pre-rendered by the same
+      # Python that serves them live, so the static build can't drift from the API.
+      - name: Export static card data
+        working-directory: api
+        run: |
+          pip install --quiet -e .
+          python scripts/export_static.py
+
+      - name: Build
+        working-directory: web
+        run: |
+          npm ci
+          npm run build:static
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

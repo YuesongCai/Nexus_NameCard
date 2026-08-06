@@ -1,0 +1,126 @@
+/*
+ * "Inverted Ink" — near-black stock on the cream page.
+ *
+ * On a cream ground this is the only element with full contrast, so it carries the whole
+ * hierarchy on its own: no border, no decoration, just the deepest value on the page plus
+ * a real shadow so it sits *on* the sheet rather than in it.
+ */
+.card {
+  position: relative;
+  background: var(--card-bg);
+  color: var(--card-fg);
+  border-radius: var(--radius-lg);
+  padding: 24px 22px 20px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  animation: rise var(--dur-base) var(--ease-out) both;
+}
+
+/*
+ * No lime edge here on purpose. The card concepts hold lime to a single appearance per
+ * face — that slot belongs to the rule under the name, and a second lime element at the
+ * top competes with it while fighting the corner radius.
+ */
+
+/* Barely-there sheen so the black reads as coated stock, not as a flat rectangle. */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(158deg, rgba(244, 241, 234, 0.06), transparent 46%);
+  pointer-events: none;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 26px;
+  color: var(--card-fg);
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: var(--card-line);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nameAlt {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--card-fg-dim);
+}
+
+.title {
+  margin-top: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--card-fg);
+}
+
+.titleAlt {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--card-fg-dim);
+}
+
+.rule {
+  width: 38px;
+  height: 2px;
+  margin: 17px 0 14px;
+  border: 0;
+  background: var(--card-rule);
+}
+
+.fine {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Written out, but at fine-print weight — present for compliance, not competing with the name. */
+.licence {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  color: var(--card-fg-dim);
+}
+
+.member {
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: var(--card-fg-faint);
+  line-height: 1.55;
+}

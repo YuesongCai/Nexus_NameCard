@@ -1,0 +1,75 @@
+.bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+  padding: 11px 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.input {
+  flex: 1;
+  min-height: 42px;
+  max-height: 116px;
+  padding: 11px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  /* 16px keeps iOS Safari from zooming the viewport on focus. */
+  font-size: 16px;
+  line-height: 1.4;
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: none;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.input::-webkit-scrollbar {
+  width: 0;
+}
+
+.input::placeholder {
+  color: var(--text-faint);
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-line);
+}
+
+.action {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.action svg {
+  width: 19px;
+  height: 19px;
+}
+
+.action:disabled {
+  opacity: 0.35;
+}
+
+.action:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.stop {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+}
