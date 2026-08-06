@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 import { track, vcardUrl } from '../api/client'
 import { t } from '../i18n'
 import type { Card, Lang } from '../types'
 import { Icon } from './Icon'
+import { WechatSheet } from './WechatSheet'
 import styles from './ContactRail.module.css'
 
 interface Props {
@@ -13,15 +16,16 @@ interface Props {
 
 interface Action {
   key: string
-  href: string
   label: string
-  icon: 'whatsapp' | 'linkedin' | 'mail' | 'phone'
+  icon: 'whatsapp' | 'linkedin' | 'wechat' | 'mail' | 'phone'
+  /** Absent for WeChat: there is no add-friend URL, so it opens a sheet instead. */
+  href?: string
   external?: boolean
 }
 
 function buildActions(card: Card, lang: Lang): Action[] {
   const actions: Action[] = []
-  const { whatsapp, linkedin, email, phones } = card.contacts
+  const { whatsapp, wechat, linkedin, email, phones } = card.contacts
 
   if (whatsapp) {
     actions.push({
@@ -31,6 +35,11 @@ function buildActions(card: Card, lang: Lang): Action[] {
       icon: 'whatsapp',
       external: true,
     })
+  }
+  // WeChat sits where LinkedIn does — same slot, but it opens a sheet rather than
+  // navigating, because no WeChat "add me" URL exists.
+  if (wechat && (wechat.id || wechat.qr)) {
+    actions.push({ key: 'wechat', label: t(lang, 'wechat'), icon: 'wechat' })
   }
   if (linkedin) {
     actions.push({
@@ -58,6 +67,7 @@ function buildActions(card: Card, lang: Lang): Action[] {
 
 export function ContactRail({ card, lang, sessionId, onSaved }: Props) {
   const actions = buildActions(card, lang)
+  const [wechatOpen, setWechatOpen] = useState(false)
 
   return (
     <section className={styles.wrap} aria-label={t(lang, 'saveContact')}>
@@ -81,18 +91,40 @@ export function ContactRail({ card, lang, sessionId, onSaved }: Props) {
           className={styles.rail}
           style={{ ['--rail-count' as string]: String(actions.length) }}
         >
-          {actions.map((action) => (
-            <a
-              key={action.key}
-              className={styles.tile}
-              href={action.href}
-              {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              onClick={() => track('contact_tap', { slug: card.slug, sessionId, detail: action.key })}
-            >
-              <Icon name={action.icon} />
-              <span className={styles.tileLabel}>{action.label}</span>
-            </a>
-          ))}
+          {actions.map((action) => {
+            const body = (
+              <>
+                <Icon name={action.icon} />
+                <span className={styles.tileLabel}>{action.label}</span>
+              </>
+            )
+            const record = (): void => {
+              track('contact_tap', { slug: card.slug, sessionId, detail: action.key })
+            }
+            return action.href ? (
+              <a
+                key={action.key}
+                className={styles.tile}
+                href={action.href}
+                {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                onClick={record}
+              >
+                {body}
+              </a>
+            ) : (
+              <button
+                key={action.key}
+                type="button"
+                className={styles.tile}
+                onClick={() => {
+                  record()
+                  setWechatOpen(true)
+                }}
+              >
+                {body}
+              </button>
+            )
+          })}
         </nav>
       )}
 
@@ -114,6 +146,14 @@ export function ContactRail({ card, lang, sessionId, onSaved }: Props) {
             </li>
           ))}
         </ul>
+      )}
+      {wechatOpen && (
+        <WechatSheet
+          card={card}
+          lang={lang}
+          sessionId={sessionId}
+          onClose={() => setWechatOpen(false)}
+        />
       )}
     </section>
   )

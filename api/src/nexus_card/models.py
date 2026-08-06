@@ -38,8 +38,17 @@ class Licence(BaseModel):
     model_config = {"populate_by_name": True}
 
 
+class WeChat(BaseModel):
+    """WeChat has no add-friend URL, so the card carries the two things that do work:
+    an ID to copy and a personal QR image to long-press inside WeChat."""
+
+    id: str | None = None
+    qr: str | None = None
+
+
 class Contacts(BaseModel):
     whatsapp: str | None = None
+    wechat: WeChat | None = None
     phones: list[Phone] = Field(default_factory=list)
     email: str | None = None
     linkedin: str | None = None

@@ -2,18 +2,36 @@
   "slug": "grantpan",
   "variant": "standard",
   "coBrand": "ark",
-  "name": { "en": "Grant Pan", "zh": "潘青" },
+  "name": {
+    "en": "Grant Pan",
+    "zh": "潘青"
+  },
   "title": {
     "en": "CEO, Hong Kong · Group CFO",
     "zh": "香港行政总裁 · 集团财务总监"
   },
-  "org": { "en": "Nexus", "zh": "Nexus" },
+  "org": {
+    "en": "Nexus",
+    "zh": "Nexus"
+  },
   "contacts": {
     "whatsapp": "+85200000000",
-    "phones": [{ "label": { "en": "Mobile", "zh": "手机" }, "value": "+852 0000 0000" }],
+    "phones": [
+      {
+        "label": {
+          "en": "Mobile",
+          "zh": "手机"
+        },
+        "value": "+852 0000 0000"
+      }
+    ],
     "email": "grant.pan@nexus.ai",
-    "linkedin": "https://www.linkedin.com/company/noah-nexus",
-    "website": "https://noahnexus.ai"
+    "linkedin": null,
+    "website": "https://noahnexus.ai",
+    "wechat": {
+      "id": "grantpan_nexus",
+      "qr": null
+    }
   },
   "licence": null,
   "memberLine": {

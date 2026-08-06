@@ -12,6 +12,9 @@ export type IconName =
   | 'refresh'
   | 'warning'
   | 'check'
+  | 'wechat'
+  | 'copy'
+  | 'close'
 
 const STROKE = {
   fill: 'none',
@@ -91,6 +94,28 @@ export function Icon({ name }: { name: IconName }) {
       return (
         <svg viewBox="0 0 24 24" aria-hidden="true" {...STROKE}>
           <path d="m5.5 12.5 4 4 9-9" />
+        </svg>
+      )
+    case 'wechat':
+      // Two overlapping speech bubbles — WeChat's recognisable silhouette, drawn filled so
+      // it reads as a brand mark next to WhatsApp rather than as a stroke icon.
+      return (
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M9.2 3C5.2 3 2 5.8 2 9.2c0 1.9 1 3.6 2.7 4.8l-.7 2.1 2.5-1.3c.7.2 1.5.3 2.3.3h.5a5.6 5.6 0 0 1-.2-1.4c0-3.2 3.1-5.8 6.9-5.8h.6C15.9 5.1 12.9 3 9.2 3ZM6.8 8.2a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Zm4.8 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z" />
+          <path d="M22 13.6c0-2.8-2.7-5-6-5s-6 2.2-6 5 2.7 5 6 5c.7 0 1.4-.1 2-.3l2.1 1.1-.6-1.8c1.5-.9 2.5-2.4 2.5-4Zm-8-.9a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm4 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+        </svg>
+      )
+    case 'copy':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true" {...STROKE}>
+          <rect x="9" y="9" width="11" height="11" rx="2" />
+          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+        </svg>
+      )
+    case 'close':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true" {...STROKE}>
+          <path d="M18 6 6 18M6 6l12 12" />
         </svg>
       )
   }

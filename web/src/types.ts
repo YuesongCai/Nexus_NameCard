@@ -27,8 +27,16 @@ export interface Licence {
   address?: Localized
 }
 
+export interface WeChat {
+  /** WeChat ID (微信号) — the universal fallback: copy, then paste into WeChat search. */
+  id?: string | null
+  /** Path to the person's exported 个人二维码 image, relative to the site base. */
+  qr?: string | null
+}
+
 export interface Contacts {
   whatsapp?: string | null
+  wechat?: WeChat | null
   phones: Phone[]
   email?: string | null
   linkedin?: string | null

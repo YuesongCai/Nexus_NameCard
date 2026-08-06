@@ -69,6 +69,13 @@ def render_vcard(card: Card, lang: Lang = "en") -> str:
     if card.contacts.whatsapp:
         lines.append(f"X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/{card.contacts.whatsapp.lstrip('+')}")
 
+    if card.contacts.wechat and card.contacts.wechat.id:
+        # No standard vCard field for WeChat; X-SOCIALPROFILE is what iOS/Android read,
+        # and X-WECHAT is what most Chinese address-book apps look for.
+        wechat_id = card.contacts.wechat.id
+        lines.append(f"X-SOCIALPROFILE;TYPE=wechat:{wechat_id}")
+        lines.append(f"X-WECHAT:{wechat_id}")
+
     if card.contacts.website:
         lines.append(f"URL;TYPE=WORK:{card.contacts.website}")
     if card.contacts.linkedin:

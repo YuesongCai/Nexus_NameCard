@@ -1,0 +1,151 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(10, 12, 8, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fade 0.18s ease-out;
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 26px 22px calc(26px + env(safe-area-inset-bottom));
+  box-shadow: 0 -12px 40px rgba(10, 12, 8, 0.22);
+  animation: rise 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  text-align: center;
+}
+
+@media (min-width: 520px) {
+  .backdrop {
+    align-items: center;
+  }
+  .sheet {
+    border-radius: var(--radius-lg);
+  }
+}
+
+.close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.close svg {
+  width: 17px;
+  height: 17px;
+}
+
+.heading {
+  margin: 0 0 18px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* A quiet, light, generously-padded panel. WeChat's detector screenshots the region
+   around the long-press, so contrast and margin here directly affect whether it
+   recognises the code. */
+.qrPanel {
+  display: inline-flex;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.qr {
+  display: block;
+  width: 200px;
+  height: 200px;
+  image-rendering: pixelated; /* keep module edges crisp when upscaled */
+}
+
+.hint {
+  margin: 14px auto 0;
+  max-width: 300px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-faint);
+}
+
+.copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.copy svg {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  color: var(--ink-faint);
+}
+
+.copyId {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyAction {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.steps {
+  margin: 12px auto 0;
+  max-width: 300px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-faint);
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rise {
+  from { transform: translateY(18px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .sheet {
+    animation: none;
+  }
+}

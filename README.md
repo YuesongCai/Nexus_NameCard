@@ -95,7 +95,9 @@ Drop a file in `api/data/cards/`. No code change, no redeploy — the store relo
     "whatsapp": "+85200000000",    // E.164; drives the wa.me link
     "phones": [{ "label": { "en": "Mobile", "zh": "手机" }, "value": "+852 0000 0000" }],
     "email": "grant.pan@nexus.ai",
-    "linkedin": "https://www.linkedin.com/company/noah-nexus",
+    // WeChat has no add-friend URL, so the card carries what does work: an ID to copy,
+    // and optionally an exported 个人二维码 to long-press inside WeChat's browser.
+    "wechat": { "id": "grantpan_nexus", "qr": null },
     "website": "https://noahnexus.ai"
   },
   "licence": null,                 // "licensed" cards add ceNumber / entity / types / address
@@ -217,6 +219,13 @@ No cookies, no PII, no question bodies; the session id is per-page-open and rand
 
 ## Known gaps
 
+- **No WeChat QR images yet.** WeChat replaced LinkedIn on the card. There is no
+  add-friend URL for personal WeChat — `weixin://` schemes cover Mini Programs only, and
+  WeChat blocks non-whitelisted schemes — so the sheet offers the two things that do work:
+  a copyable WeChat ID, and a long-pressable 个人二维码. The QR only renders once a real
+  export is dropped at `web/public/wechat/<slug>.png` and `contacts.wechat.qr` points at
+  it; until then the sheet degrades to the copy-ID path on its own. A placeholder QR is
+  worse than none — it would scan to a dead URL.
 - **Grant Pan's phone number is the placeholder** `+852 0000 0000` carried over from the
   concept deck, and `潘青` is inferred from the public Noah Holdings listing. Both need
   confirming before print.
