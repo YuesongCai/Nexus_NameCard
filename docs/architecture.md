@@ -156,3 +156,60 @@ AgentKit 有企业知识库能力（现在 YAML 里是关掉的）。但名片 K
 
 建议：**知识留在 `api/kb/`（git 里可 review、可回滚），AgentKit 只当模型端点。**
 等 KB 涨到 3–5 万字符再评估要不要上企业知识库。
+
+---
+
+## CI/CD：改 KB → 自动上线到你自己的 AgentKit
+
+```
+push api/kb/*.md
+  → .github/workflows/agentkit.yml
+      ├─ build_agentkit_yaml.py   （KB → agent 定义）
+      └─ agentkit_deploy.py       （BytePlus OpenAPI，Volc V4 签名）
+  → 线上 agent 已更新
+```
+
+### 你需要做的（凭证只经你的手，不经我）
+
+**BytePlus 控制台 → User Profile → IAM → Key Management** 拿 AK/SK，然后在
+**GitHub 仓库 → Settings → Secrets and variables → Actions** 里添加：
+
+| 类型 | 名称 | 说明 |
+|---|---|---|
+| Secret | `BYTEPLUS_ACCESS_KEY` | AccessKey ID |
+| Secret | `BYTEPLUS_SECRET_KEY` | AccessKey Secret |
+| Secret | `AGENTKIT_RUNTIME_ID` | 跑一次 `list` 就能拿到 |
+| Variable | `AGENTKIT_SERVICE` | 可选，默认 `agentkit` |
+| Variable | `AGENTKIT_REGION` | 可选，默认 `ap-southeast-1` |
+
+> **不要把 AK/SK 贴给我，也不要写进任何文件。** GitHub Secrets 里设好即可，
+> workflow 通过环境变量读取，脚本从不打印它们。
+
+### 第一步：本地验证凭证与端点
+
+```bash
+export BYTEPLUS_ACCESS_KEY=...   # 只在你自己的终端里
+export BYTEPLUS_SECRET_KEY=...
+python api/scripts/agentkit_deploy.py list
+```
+
+**这一条调用同时验证三件事**：凭证对不对、region 对不对、service 名对不对。
+成功就会列出你账号下的 runtime（含 runtime id）。
+
+### 已验证 vs 还需一次真实调用确认
+
+| 项 | 状态 |
+|---|---|
+| Volc V4 签名算法 | ✅ 11 个单元测试，签名确定性、body 变化、scope 格式、密钥不泄漏都覆盖 |
+| 端点规则 `{service}.{region}.byteplusapi.com` | ✅ 来自 BytePlus SDK 官方文档 |
+| Runtime 的 OpenAPI Action 名 | ⚠️ `ListRuntimes` / `GetRuntime` / `UpdateRuntime` 来自文档索引，未实调 |
+| AgentKit 注册的 **service 名** | ⚠️ 默认 `agentkit`，未实调确认 |
+| `UpdateRuntime` 的**请求体字段** | ⚠️ 目前按 `{Id, Definition}` 提交，未实调确认 |
+
+后三项都做成了命令行参数而不是写死。**跑一次 `list`，报错信息会直接告诉我们哪个不对**，
+贴给我改一行就好。
+
+> 顺带一提：网上能搜到的「`npm install -g agentkit-cli`」是**错的** ——
+> npm 上那个 `agentkit-cli` 是别人的占位包（axon 工具），PyPI 上的 `agentkit`
+> 是第三方 swarm 框架。官方只有 `volcengine` 这个 Python SDK。所以这里走的是
+> OpenAPI + 自己签名，不依赖任何来路不明的 CLI。

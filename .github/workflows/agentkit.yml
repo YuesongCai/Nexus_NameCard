@@ -1,0 +1,79 @@
+name: Deploy agent to AgentKit
+
+# The knowledge line, automated: edit api/kb/*.md → merge → the live agent is rebuilt.
+# Nobody edits prompt text in the AgentKit console, so the repo stays the single source of
+# truth for what the bot knows.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/kb/**'
+      - 'api/scripts/build_agentkit_yaml.py'
+      - 'api/scripts/agentkit_deploy.py'
+      - '.github/workflows/agentkit.yml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '只打印将要发送的请求，不实际部署'
+        type: boolean
+        default: false
+
+concurrency:
+  group: agentkit
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Secrets are set by the repo owner in Settings → Secrets and variables → Actions.
+    # They are never committed, never printed, and never passed on a command line.
+    env:
+      BYTEPLUS_ACCESS_KEY: ${{ secrets.BYTEPLUS_ACCESS_KEY }}
+      BYTEPLUS_SECRET_KEY: ${{ secrets.BYTEPLUS_SECRET_KEY }}
+      AGENTKIT_RUNTIME_ID: ${{ secrets.AGENTKIT_RUNTIME_ID }}
+      AGENTKIT_SERVICE: ${{ vars.AGENTKIT_SERVICE || 'agentkit' }}
+      AGENTKIT_REGION: ${{ vars.AGENTKIT_REGION || 'ap-southeast-1' }}
+      AGENTKIT_API_VERSION: ${{ vars.AGENTKIT_API_VERSION || '2024-01-01' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install
+        working-directory: api
+        run: pip install --quiet -e .
+
+      # Fail loudly and early rather than half-deploying with an empty secret.
+      - name: Check credentials are configured
+        run: |
+          missing=""
+          [ -z "$BYTEPLUS_ACCESS_KEY" ] && missing="$missing BYTEPLUS_ACCESS_KEY"
+          [ -z "$BYTEPLUS_SECRET_KEY" ] && missing="$missing BYTEPLUS_SECRET_KEY"
+          [ -z "$AGENTKIT_RUNTIME_ID" ] && missing="$missing AGENTKIT_RUNTIME_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::缺少 secret:$missing"
+            echo "在 Settings → Secrets and variables → Actions 里添加后重跑。"
+            exit 1
+          fi
+
+      - name: Build agent definition from api/kb/
+        working-directory: api
+        run: python scripts/build_agentkit_yaml.py --out ../nexus_namecard_faq_assistant.yaml
+
+      - name: Deploy
+        working-directory: api
+        run: |
+          python scripts/agentkit_deploy.py update \
+            --runtime-id "$AGENTKIT_RUNTIME_ID" \
+            --yaml ../nexus_namecard_faq_assistant.yaml \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      # The generated YAML is a build artefact, but keeping it attached to the run makes it
+      # possible to see exactly what was deployed without re-running the build.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-definition
+          path: nexus_namecard_faq_assistant.yaml
