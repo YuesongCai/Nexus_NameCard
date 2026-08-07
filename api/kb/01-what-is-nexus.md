@@ -2,7 +2,7 @@
 id: what-is-nexus
 title: What Nexus is / Nexus 是什么
 tags: [overview, positioning, elevator]
-weight: 1.4
+weight: 1.15
 ---
 
 ## What Nexus is
