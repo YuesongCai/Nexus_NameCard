@@ -52,6 +52,10 @@ class ChatService:
                 messages,
                 max_tokens=self.settings.llm_max_tokens,
                 temperature=self.settings.llm_temperature,
+                # Stateful runtimes (AgentKit) key their own memory off these; the
+                # stateless providers ignore them.
+                session_id=request.session_id,
+                user_id=request.slug or "visitor",
             ):
                 emitted = True
                 yield _frame(events.delta(delta))

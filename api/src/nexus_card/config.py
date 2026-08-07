@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     web_dist_dir: Path = _API_ROOT.parent / "web" / "dist"
     default_card_slug: str = "grantpan"
 
-    # --- LLM provider: bedrock | anthropic | echo ---
+    # --- LLM provider: bedrock | anthropic | agentkit | echo ---
     llm_provider: str = "bedrock"
     llm_max_tokens: int = 700
     llm_temperature: float = 0.2
@@ -42,6 +42,15 @@ class Settings(BaseSettings):
     aws_region: str = "ap-southeast-1"
     bedrock_model_id: str = "apac.anthropic.claude-sonnet-4-5-20250929-v1:0"
     bedrock_embed_model_id: str = "amazon.titan-embed-text-v2:0"
+
+    # Volcengine AgentKit (VeADK runtime). The agent there is deliberately thin — role and
+    # rules only — because retrieval stays on our side so `api/kb/` remains the one source
+    # of truth for knowledge. See docs/architecture.md.
+    agentkit_base_url: str = ""
+    agentkit_app_name: str = ""
+    agentkit_api_key: str = ""
+    agentkit_connect_timeout: float = 15.0
+    agentkit_read_timeout: float = 120.0
 
     # Anthropic direct API (fallback / local dev)
     anthropic_api_key: str = ""

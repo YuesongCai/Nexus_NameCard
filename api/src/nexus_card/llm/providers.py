@@ -11,6 +11,7 @@ import httpx
 import structlog
 
 from nexus_card.config import Settings
+from nexus_card.llm.agentkit import AgentKitProvider
 from nexus_card.llm.base import LlmError, LlmProvider
 from nexus_card.models import ChatMessage
 
@@ -43,6 +44,8 @@ class BedrockProvider:
         *,
         max_tokens: int,
         temperature: float,
+        session_id: str | None = None,
+        user_id: str | None = None,
     ) -> AsyncIterator[str]:
         client = self._get_client()
         payload = {
@@ -107,6 +110,8 @@ class AnthropicProvider:
         *,
         max_tokens: int,
         temperature: float,
+        session_id: str | None = None,
+        user_id: str | None = None,
     ) -> AsyncIterator[str]:
         body = {
             "model": self.model_id,
@@ -162,6 +167,8 @@ class EchoProvider:
         *,
         max_tokens: int,
         temperature: float,
+        session_id: str | None = None,
+        user_id: str | None = None,
     ) -> AsyncIterator[str]:
         last = messages[-1].content if messages else ""
         for word in f"[echo] {last}".split(" "):
@@ -175,6 +182,14 @@ def build_provider(settings: Settings) -> LlmProvider:
         return BedrockProvider(settings.aws_region, settings.bedrock_model_id)
     if provider == "anthropic":
         return AnthropicProvider(settings.anthropic_api_key, settings.anthropic_model_id)
+    if provider == "agentkit":
+        return AgentKitProvider(
+            settings.agentkit_base_url,
+            settings.agentkit_app_name,
+            settings.agentkit_api_key,
+            connect_timeout=settings.agentkit_connect_timeout,
+            read_timeout=settings.agentkit_read_timeout,
+        )
     if provider == "echo":
         return EchoProvider()
     raise LlmError(f"unknown llm provider: {settings.llm_provider}")

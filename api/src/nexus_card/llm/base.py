@@ -28,6 +28,12 @@ class LlmProvider(Protocol):
         *,
         max_tokens: int,
         temperature: float,
+        session_id: str | None = None,
+        user_id: str | None = None,
     ) -> AsyncIterator[str]:
-        """Yield text deltas. Must raise `LlmError` on an unrecoverable failure."""
+        """Yield text deltas. Must raise `LlmError` on an unrecoverable failure.
+
+        `session_id` / `user_id` are only meaningful for stateful runtimes (AgentKit keeps
+        conversation memory server-side); stateless providers ignore them.
+        """
         ...
