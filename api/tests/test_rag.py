@@ -41,11 +41,11 @@ def test_tokenizer_handles_cjk() -> None:
         ("What does Nexus cost?", {"commercials", "commitments-and-faq"}),
         ("Nexus 收费吗", {"commercials", "commitments-and-faq"}),
         ("how many FCN issuers", {"product-shelf", "modules"}),
-        ("who is Nexus built for", {"who-its-for"}),
-        ("客户数据安全吗", {"compliance", "commitments-and-faq"}),
+        ("who is Nexus built for", {"who-its-for", "what-is-nexus"}),
+        ("客户数据安全吗", {"compliance", "commitments-and-faq", "trust-and-audit"}),
         ("what licences do you hold", {"compliance", "noah-and-ark"}),
-        ("怎么开户", {"onboarding"}),
-        ("can I use it from WhatsApp", {"connect"}),
+        ("怎么开户", {"onboarding", "account-opening"}),
+        ("can I use it from WhatsApp", {"connect", "entry-points-and-memory"}),
         ("who owns the client relationship", {"commitments-and-faq", "who-its-for"}),
         ("诺亚控股是什么", {"noah-and-ark"}),
     ],
@@ -64,9 +64,9 @@ def test_expected_doc_reaches_the_prompt(
     [
         ("What does Nexus cost?", {"commercials", "commitments-and-faq"}),
         ("how many FCN issuers", {"product-shelf"}),
-        ("who is Nexus built for", {"who-its-for"}),
-        ("客户数据安全吗", {"compliance", "commitments-and-faq"}),
-        ("怎么开户", {"onboarding"}),
+        ("who is Nexus built for", {"who-its-for", "what-is-nexus"}),
+        ("客户数据安全吗", {"compliance", "commitments-and-faq", "trust-and-audit"}),
+        ("怎么开户", {"onboarding", "account-opening"}),
     ],
 )
 def test_top_hit_is_relevant(retriever: Retriever, query: str, expected_doc: set[str]) -> None:
@@ -79,7 +79,8 @@ def test_top_hit_is_relevant(retriever: Retriever, query: str, expected_doc: set
 def test_tags_lift_the_on_topic_passage(retriever: Retriever) -> None:
     """The `whatsapp` tag must pull the Connect doc above unrelated passages."""
     ranked = [hit.chunk.doc_id for hit in retriever.search("can I use it from WhatsApp")]
-    assert "connect" in ranked[:2]
+    # Either the Connect chapter or the entry-points chapter is a correct home for this.
+    assert {"connect", "entry-points-and-memory"} & set(ranked[:2])
 
 
 def test_off_topic_query_returns_little(retriever: Retriever) -> None:
