@@ -32,8 +32,11 @@ def _hmac(key: bytes, message: str) -> bytes:
 
 def _canonical_query(params: dict[str, str]) -> str:
     # Sorted by key, RFC-3986 encoded — the server rebuilds this string exactly.
+    # Values arrive as ints/bools from callers often enough that coercing here is worth
+    # more than a TypeError deep inside urllib during a half-finished deploy.
     return "&".join(
-        f"{quote(k, safe='-_.~')}={quote(v, safe='-_.~')}" for k, v in sorted(params.items())
+        f"{quote(str(k), safe='-_.~')}={quote(str(v), safe='-_.~')}"
+        for k, v in sorted(params.items())
     )
 
 
@@ -77,12 +80,16 @@ class BytePlusSigner:
         method: str = "POST",
         path: str = "/",
         now: _dt.datetime | None = None,
+        extra_params: dict[str, str] | None = None,
     ) -> SignedRequest:
         now = now or _dt.datetime.now(_dt.UTC)
         x_date = now.strftime("%Y%m%dT%H%M%SZ")
         short_date = x_date[:8]
 
-        params = {"Action": action, "Version": version}
+        # BytePlus OpenAPI carries request parameters in the query string (verified
+        # against ECS DescribeInstances), so they must be part of the signed canonical
+        # query — signing only Action/Version yields a valid-looking, rejected request.
+        params = {"Action": action, "Version": version, **(extra_params or {})}
         canonical_query = _canonical_query(params)
         payload_hash = _sha256_hex(body)
 
