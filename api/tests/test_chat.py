@@ -114,8 +114,10 @@ async def test_llm_failure_degrades_to_handoff(
     assert frames[-1]["type"] == "response.completed"
 
     answer = "".join(f["delta"] for f in frames if f["type"] == "response.output_text.delta")
-    # The visitor gets a route to the human, not an empty bubble or a stack trace.
-    assert "潘青" in answer
+    # The visitor gets a route to a human, not an empty bubble or a stack trace — and the
+    # route is to a role, never to the card holder by name.
+    assert "客户代表" in answer
+    assert "潘青" not in answer
 
 
 async def test_history_is_trimmed(retriever: Retriever) -> None:
@@ -137,19 +139,39 @@ async def test_history_is_trimmed(retriever: Retriever) -> None:
 # ---------------------------------------------------------------------- prompt
 
 
-def test_prompt_carries_guardrails_and_owner(licensed_card: Card) -> None:
+def test_prompt_carries_guardrails_and_context(licensed_card: Card) -> None:
     prompt = build_system_prompt(licensed_card, "en", "[1] some context")
 
     assert "No investment advice" in prompt
-    assert "AAA000" in prompt
     assert "[1] some context" in prompt
+    # A licensed card still may not answer as a licensed representative.
+    assert "may still not give advice" in prompt
 
 
-def test_prompt_flags_unlicensed_owner(store: CardStore) -> None:
+def test_prompt_flags_unlicensed_holder(store: CardStore) -> None:
     prompt = build_system_prompt(store.get("grantpan"), "en", "")
-    assert "Not an SFC-licensed representative" in prompt
+    assert "not an SFC-licensed representative" in prompt
     # No retrieved context → the prompt must forbid guessing.
     assert "Do not guess" in prompt
+
+
+def test_prompt_never_leaks_the_holder_identity(
+    licensed_card: Card, store: CardStore
+) -> None:
+    """The bot speaks as Nexus. The holder's name, title and contact details are on the
+    page above the chat; putting them in the prompt only invites "go ask <name>", which
+    reads as presumptuous to a stranger who just scanned a card."""
+    for card in (licensed_card, store.get("grantpan")):
+        for lang in ("en", "zh"):
+            prompt = build_system_prompt(card, lang, "[1] ctx")
+            for leaked in (
+                card.name.en,
+                card.name.zh,
+                card.title.en,
+                card.contacts.email or "\x00",
+                (card.licence.ce_number if card.licence else "\x00"),
+            ):
+                assert leaked not in prompt, f"{leaked!r} leaked into the {lang} prompt"
 
 
 # --------------------------------------------------------------------- bedrock

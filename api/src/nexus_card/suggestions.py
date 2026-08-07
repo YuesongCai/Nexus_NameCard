@@ -49,24 +49,14 @@ def suggestions_for(card: Card | None, lang: Lang) -> list[Suggestion]:
 
 
 def greeting_for(card: Card | None, lang: Lang) -> str:
-    name = ""
-    if card is not None:
-        name = card.name.zh if lang == "zh" else card.name.en
-
+    """Nameless on purpose — the holder's details sit directly above this bubble, and the
+    assistant speaks as Nexus rather than as anyone's personal assistant."""
     if lang == "zh":
-        if name and name != "Nexus":
-            return (
-                "你好 —— 我是 Nexus 助手。关于 Nexus 是什么、服务谁、怎么合作，问我就行；"
-                f"{name}本人的联系方式就在上面。"
-            )
-        return "你好 —— 我是 Nexus 助手。关于 Nexus 是什么、服务谁、怎么合作，问我就行。"
-
-    if name and name != "Nexus":
         return (
-            f"Hi — I'm the Nexus assistant. Ask me what Nexus does, who we serve, or how we "
-            f"work together. {name}'s own details are up top."
+            "你好 —— 我是 Nexus 助手。关于 Nexus 是什么、服务谁、怎么合作，问我就行；"
+            "要找人的话，联系方式就在上面。"
         )
     return (
-        "Hi — I'm the Nexus assistant. Ask me what Nexus does, who we serve, "
-        "or how we work together."
+        "Hi — I'm the Nexus assistant. Ask me what Nexus does, who we serve, or how we work "
+        "together. To reach a person, the contact details are just above."
     )
