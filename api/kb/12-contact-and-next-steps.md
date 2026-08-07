@@ -2,7 +2,7 @@
 id: contact
 title: Contact and next steps / 联系方式与下一步
 tags: [contact, demo, email, next-steps, careers, partnerships]
-weight: 1.0
+weight: 0.95
 ---
 
 ## Next steps

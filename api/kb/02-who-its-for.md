@@ -2,7 +2,7 @@
 id: who-its-for
 title: Who Nexus is for / 服务对象
 tags: [audience, eam, ifa, family-office, rm]
-weight: 1.2
+weight: 1.1
 ---
 
 ## Who it's for

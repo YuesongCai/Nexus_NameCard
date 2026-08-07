@@ -1,8 +1,8 @@
 ---
 id: commercials
 title: Commercials and pricing / 商业模式与费用
-tags: [pricing, fees, revenue-share, saas, cost, bp, commercials]
-weight: 1.0
+tags: [pricing, fees, revenue-share, saas, cost, bp, commercials, 要花多少钱, 多少钱, 贵不贵, 收多少, 价格, 费用]
+weight: 1.15
 ---
 
 ## Commercials

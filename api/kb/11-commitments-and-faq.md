@@ -2,7 +2,7 @@
 id: commitments-and-faq
 title: Our commitments and FAQ / 三条承诺与常见问题
 tags: [commitments, faq, differentiation, competitors, client-ownership]
-weight: 1.2
+weight: 0.9
 ---
 
 ## Three lines we don't cross

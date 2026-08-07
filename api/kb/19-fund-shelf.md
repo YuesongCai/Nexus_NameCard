@@ -2,7 +2,7 @@
 id: fund-shelf
 title: The fund shelf explained / 基金货架怎么看
 tags: [funds, private, secondary, public, cash, allocation, liquidity, 一级, 二级, 公募, 货基]
-weight: 1.1
+weight: 1.05
 ---
 
 ## What is on the shelf

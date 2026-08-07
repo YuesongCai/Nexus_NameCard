@@ -2,7 +2,7 @@
 id: account-opening
 title: Opening an account / 开户全流程
 tags: [account, onboarding, kyc, pi, documents, crs, custody, 开户, 材料, 托管, 资金安全, 打款, 防骗]
-weight: 1.2
+weight: 1.1
 ---
 
 ## How long it takes

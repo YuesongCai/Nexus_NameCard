@@ -26,6 +26,10 @@ _TAG_BONUS = 0.22
 class Hit:
     chunk: Chunk
     score: float
+    #: Raw BM25, before normalisation. `score` is min-max normalised, which means the best
+    #: hit is ~1.0 for *every* query including nonsense — useful for ranking, useless for
+    #: judging whether anything matched at all. This is the absolute signal.
+    lexical: float = 0.0
 
 
 def _min_max(values: list[float]) -> list[float]:
@@ -99,7 +103,8 @@ class Retriever:
         if not self.chunks:
             return []
 
-        lexical = _min_max(self._bm25.scores(query))
+        raw_lexical = self._bm25.scores(query)
+        lexical = _min_max(raw_lexical)
 
         dense: list[float] = [0.0] * len(self.chunks)
         dense_active = False
@@ -128,10 +133,21 @@ class Retriever:
             if matches:
                 score += _TAG_BONUS * min(matches, 2) / 2
 
-            hits.append(Hit(chunk=chunk, score=score * chunk.weight))
+            hits.append(
+                Hit(chunk=chunk, score=score * chunk.weight, lexical=raw_lexical[i])
+            )
 
         hits.sort(key=lambda h: h.score, reverse=True)
-        return [h for h in hits[:top_k] if h.score >= self.settings.retrieval_min_score]
+        top = hits[:top_k]
+
+        # Drop everything when nothing genuinely matched. Ranking says which chunk is most
+        # like the query; only the absolute lexical score says whether any of them is about
+        # it. Without this an off-topic question still returns a confident-looking passage.
+        best_lexical = max((h.lexical for h in top), default=0.0)
+        if best_lexical < self.settings.retrieval_min_lexical:
+            return []
+
+        return [h for h in top if h.score >= self.settings.retrieval_min_score]
 
     @staticmethod
     def as_context(hits: list[Hit]) -> str:

@@ -59,6 +59,9 @@ class Settings(BaseSettings):
     # --- retrieval ---
     retrieval_top_k: int = 5
     retrieval_min_score: float = 0.02
+    #: Absolute BM25 floor. Below this nothing in the KB is really about the question, and
+    #: the bot should say so rather than dress up the nearest passage.
+    retrieval_min_lexical: float = 1.2
     embeddings_enabled: bool = True
 
     # --- abuse control ---

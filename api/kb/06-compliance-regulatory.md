@@ -1,8 +1,8 @@
 ---
 id: compliance
 title: Compliance, licensing and audit / 合规、牌照与审计
-tags: [compliance, sfc, mas, sec, hkma, audit, licence, regulatory, data]
-weight: 1.3
+tags: [compliance, sfc, mas, sec, hkma, audit, licence, regulatory, data, are you licensed, licensed, licence, 有没有牌照, 持牌吗, 合法吗, 正规吗]
+weight: 1.05
 ---
 
 ## Licensing

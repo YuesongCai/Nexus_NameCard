@@ -2,7 +2,7 @@
 id: agents-and-skills
 title: The agent org and skill marketplace / Agent 编制与技能市场
 tags: [agents, skills, marketplace, oversight, compliance-lead, ai]
-weight: 0.9
+weight: 0.95
 ---
 
 ## The agent org

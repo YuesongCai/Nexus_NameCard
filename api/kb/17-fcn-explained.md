@@ -1,8 +1,8 @@
 ---
 id: fcn-explained
 title: FCN explained / 什么是 FCN
-tags: [fcn, structured, coupon, strike, knock-in, knock-out, notes, 结构化, 票息]
-weight: 1.2
+tags: [fcn, structured, coupon, strike, knock-in, knock-out, notes, 结构化, 票息, FCN 是什么, 什么是FCN, 固定票息, 票据]
+weight: 1.1
 ---
 
 ## FCN in one minute
@@ -16,7 +16,7 @@ day you placed the order.
 In one line: **you trade a promise to buy a good company at a lower price for a locked
 monthly cash flow.**
 
-## 一分钟看懂 FCN（中文）
+## FCN 是什么 —— 一分钟看懂（中文）
 
 FCN（固定票息票据）是挂钩 1–4 只优质股票的投资票据。买入后，无论期间股价涨跌，每月按约定票息
 固定收现金；到期时，股价没跌破期初约定的**执行价**，本金 100% 拿回；跌破了，就按这个提前约定

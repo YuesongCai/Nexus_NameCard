@@ -1,8 +1,8 @@
 ---
 id: entry-points-and-memory
 title: Where you use it, and how it remembers / 三个入口与记忆
-tags: [entry-points, whatsapp, mcp, memory, context, surfaces]
-weight: 1.1
+tags: [entry-points, whatsapp, mcp, memory, context, surfaces, WhatsApp, 微信里能用吗, 手机上能用吗, 在哪里用, 入口]
+weight: 1.0
 ---
 
 ## Three ways in, one brain

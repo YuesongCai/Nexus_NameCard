@@ -2,7 +2,7 @@
 id: skills-library
 title: The skill library / 技能库
 tags: [skills, methodology, research, valuation, suitability, knowhow]
-weight: 1.0
+weight: 0.95
 ---
 
 ## What a "skill" is here

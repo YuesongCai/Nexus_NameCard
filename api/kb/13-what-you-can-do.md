@@ -1,11 +1,15 @@
 ---
 id: what-you-can-do
 title: What the AI can actually do / AI 具体能做什么
-tags: [capabilities, tools, ask-nexus, agents, assistants, what-can-it-do]
-weight: 1.3
+tags: [capabilities, tools, ask-nexus, agents, assistants, what-can-it-do,
+       AI能做什么, AI可以干啥, AI有什么用, 能帮我做什么, 功能, 助手]
+weight: 1.15
 ---
 
-## Five assistants, not a chatbot
+## What the Nexus AI can do — five assistants, not a chatbot
+
+「Nexus 的 AI 可以干啥 / 能做什么 / 有什么用」—— 答案是下面这五个助手分工完成的活。
+
 
 Ask Nexus is not one general assistant. The work is split across five specialists, so a user
 never needs to know a tool name — only who to ask.

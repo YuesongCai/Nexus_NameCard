@@ -1,8 +1,8 @@
 ---
 id: trust-and-audit
 title: Trust, audit and data protection / 信任、留痕与数据保护
-tags: [audit, security, pii, permissions, trail, write-operation, safety]
-weight: 1.3
+tags: [audit, security, pii, permissions, trail, write-operation, safety, 客户数据安全吗, 数据安全, 会不会泄露, 隐私, 安全吗]
+weight: 1.0
 ---
 
 ## Only one thing can write

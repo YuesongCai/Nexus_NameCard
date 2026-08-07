@@ -2,7 +2,7 @@
 id: product-shelf
 title: The product shelf / 产品货架
 tags: [products, funds, structured, fcn, rfq, shelf, issuers]
-weight: 1.1
+weight: 1.0
 ---
 
 ## The shelf

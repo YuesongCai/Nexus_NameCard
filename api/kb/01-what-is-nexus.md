@@ -1,7 +1,7 @@
 ---
 id: what-is-nexus
 title: What Nexus is / Nexus 是什么
-tags: [overview, positioning, elevator]
+tags: [overview, positioning, elevator, 你们是做什么的, 做什么的, 是干什么的, 什么公司, 介绍一下]
 weight: 1.15
 ---
 

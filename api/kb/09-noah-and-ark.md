@@ -2,7 +2,7 @@
 id: noah-and-ark
 title: Noah Holdings and Ark / 诺亚控股与 Ark
 tags: [noah, ark, parent, holdings, listed, nyse, hkex, offices, track-record]
-weight: 1.1
+weight: 1.0
 ---
 
 ## Noah Holdings
