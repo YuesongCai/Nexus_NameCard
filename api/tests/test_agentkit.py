@@ -139,3 +139,43 @@ class TestStreamDeduplication:
         ]
         assert "".join(out) == "Nexus 是诺亚"
         assert out == ["Nexus", " 是", "诺亚"]
+
+
+class TestLiveRuntimeShapes:
+    """Event shapes captured from a real BytePlus AgentKit runtime (2026-08).
+
+    Both behaviours below were bugs found only by calling the live endpoint — the
+    defensive parser written from the reference proxy passed every synthetic test and
+    would still have shown visitors the model's reasoning, twice.
+    """
+
+    def test_thought_parts_are_never_shown(self) -> None:
+        # Real frame: reasoning tokens are marked `thought`, answer tokens are not.
+        event = {
+            "modelVersion": "deepseek-v4-pro-260425",
+            "content": {
+                "parts": [
+                    {"text": "The user is asking", "thought": True},
+                    {"text": "你好", "thought": False},
+                ],
+                "role": "model",
+            },
+            "partial": True,
+            "author": "ai_coding_agent",
+        }
+        assert _extract_text(event) == "你好"
+
+    def test_all_thought_frame_yields_nothing(self) -> None:
+        event = {"content": {"parts": [{"text": "Let me count", "thought": True}]}}
+        assert _extract_text(event) == ""
+
+    def test_terminal_frame_repeats_the_whole_answer(self) -> None:
+        # The runtime's closing `partial: false` frame carries the full answer again.
+        # The stream loop drops it once anything has been emitted; the parser itself
+        # still reads it, for the non-streaming fallback path.
+        terminal = {
+            "partial": False,
+            "content": {"parts": [{"text": "你好呀好", "thought": False}]},
+        }
+        assert _extract_text(terminal) == "你好呀好"
+        assert terminal.get("partial") is False  # what the loop keys off

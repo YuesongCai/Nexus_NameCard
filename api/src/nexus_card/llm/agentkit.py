@@ -30,6 +30,16 @@ from nexus_card.models import ChatMessage
 log = structlog.get_logger(__name__)
 
 
+def _is_thought(part: Any) -> bool:
+    """Reasoning tokens carry `thought: true` and must never reach the visitor.
+
+    Measured against the live runtime: a four-character answer arrived as 178 thought
+    fragments and 4 answer fragments. Without this filter the page renders the model's
+    entire English reasoning monologue instead of the reply.
+    """
+    return isinstance(part, dict) and bool(part.get("thought"))
+
+
 def _extract_text(event: Any) -> str:
     """Pull assistant text out of one ADK-style event, tolerating several shapes."""
     if isinstance(event, str):
@@ -47,7 +57,9 @@ def _extract_text(event: Any) -> str:
         parts = content.get("parts")
         if isinstance(parts, list):
             return "".join(
-                p.get("text", "") for p in parts if isinstance(p, dict) and p.get("text")
+                p.get("text", "")
+                for p in parts
+                if isinstance(p, dict) and p.get("text") and not _is_thought(p)
             )
     if isinstance(content, str):
         return content
@@ -61,7 +73,9 @@ def _extract_text(event: Any) -> str:
     parts = event.get("parts")
     if isinstance(parts, list):
         return "".join(
-            p.get("text", "") for p in parts if isinstance(p, dict) and p.get("text")
+            p.get("text", "")
+            for p in parts
+            if isinstance(p, dict) and p.get("text") and not _is_thought(p)
         )
     return ""
 
@@ -182,6 +196,13 @@ class AgentKitProvider:
                         try:
                             event = json.loads(chunk)
                         except json.JSONDecodeError:
+                            continue
+
+                        # The runtime closes with a consolidated `partial: false` frame
+                        # that repeats the entire answer. Measured live: streaming it too
+                        # renders the reply twice. Use it only as a non-streaming fallback.
+                        is_final = event.get("partial") is False
+                        if is_final and emitted:
                             continue
 
                         piece = _extract_text(event)
