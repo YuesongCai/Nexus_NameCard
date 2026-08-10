@@ -36,19 +36,17 @@ export function Footer({ card, lang }: { card: Card; lang: Lang }) {
               </>
             )}
 
-            {/* Only rendered for a card that still carries a type breakdown. The default
-                since 2026-08-10 is no types at all, and an empty <dd> under the regulator's
-                name reads as "licensed for nothing". */}
+            {/* Descriptions only — no "第 1 类" / "Type 1" numbering. Compliance dropped the
+                1/4/9 codes on 2026-08-10 ("第一类、第四类、第九类都可以不写了"); the approved
+                card keeps what the person may actually do and loses the code that has to be
+                re-approved whenever their permissions change. Gated on having types at all,
+                so a card without them doesn't print a regulator "licensed for nothing". */}
             {licence.types.length > 0 && (
               <>
                 <dt>{pick(licence.regulator, lang)}</dt>
                 <dd>
                   {licence.types
-                    .map((type) =>
-                      lang === 'zh'
-                        ? `第 ${type.code} 类 ${type.zh}`
-                        : `Type ${type.code} ${type.en}`,
-                    )
+                    .map((type) => (lang === 'zh' ? type.zh : type.en))
                     .join(lang === 'zh' ? '、' : ' · ')}
                 </dd>
               </>

@@ -24,23 +24,12 @@ export function IdentityCard({ card, lang }: Props) {
   const titleAlt = other(card.title, lang)
   const licence = card.licence
 
-  // Compliance dropped the Type 1 / 4 / 9 breakdown from the printed card on 2026-08-10:
-  // the central entity number identifies the person, and the type list only creates a claim
-  // that has to be re-approved every time someone's permissions change. It still renders if
-  // a card carries one, but the default line is the CE number alone — and nothing at all
-  // when we have not confirmed that person's number ("有则完整呈现，无则删除").
+  // The CE number alone. The 1/4/9 codes came off the approved card on 2026-08-10, and the
+  // activity descriptions that replaced them are too long for this line — they live in the
+  // footer. Nothing renders at all when the person's number is unconfirmed, per
+  // "有则完整呈现，无则删除": a placeholder here would read as a licence claim.
   const licenceLine =
-    licence && licence.ceNumber
-      ? [
-          `${t(lang, 'ceNumber')} ${licence.ceNumber}`,
-          licence.types.length > 0 &&
-            (lang === 'zh'
-              ? `第 ${licence.types.map((type) => type.code).join(' / ')} 类`
-              : `Type ${licence.types.map((type) => type.code).join(' / ')}`),
-        ]
-          .filter(Boolean)
-          .join(' · ')
-      : null
+    licence && licence.ceNumber ? `${t(lang, 'ceNumber')} ${licence.ceNumber}` : null
 
   return (
     <article className={styles.card}>

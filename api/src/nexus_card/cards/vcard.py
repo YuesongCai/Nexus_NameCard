@@ -83,9 +83,9 @@ def render_vcard(card: Card, lang: Lang = "en") -> str:
 
     note_parts: list[str] = []
     if card.licence:
-        types = " / ".join(
-            f"Type {t.code} {t.zh if zh_first else t.en}" for t in card.licence.types
-        )
+        # Descriptions only, matching the approved card — the 1/4/9 codes came off on
+        # 2026-08-10 and the vCard note should not reintroduce them into someone's phone.
+        types = " / ".join(t.zh if zh_first else t.en for t in card.licence.types)
         entity = card.licence.entity.zh if zh_first else card.licence.entity.en
         if card.licence.ce_number:
             note_parts.append(f"SFC CE No. {card.licence.ce_number}")

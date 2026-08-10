@@ -38,20 +38,11 @@ def test_vcard_carries_the_essentials(store: CardStore) -> None:
 
 
 def test_unlicensed_vcard_has_no_regulatory_note(store: CardStore) -> None:
+    """An A-version card shows 不展示持牌信息, full stop."""
     vcf = render_vcard(store.get("nexus"), "en")
     assert "SFC CE No." not in vcf
+    assert "Ark Group Holdings" not in vcf
     assert "ADR;" not in vcf
-
-
-def test_card_without_a_confirmed_ce_number_omits_the_personal_line(
-    store: CardStore,
-) -> None:
-    """"有则完整呈现，无则删除" — an unconfirmed CE number is shown as nothing, never as a
-    placeholder. The licensed corporation still appears, because that fact is confirmed."""
-    vcf = render_vcard(store.get("frankxiao"), "en")
-    assert "SFC CE No." not in vcf
-    assert "Ark Group Holdings (Hong Kong) Limited" in vcf
-    assert "Entity CE No. AYC880" in vcf
 
 
 def test_licensed_vcard_carries_regulatory_detail(licensed_card: Card) -> None:
@@ -59,8 +50,12 @@ def test_licensed_vcard_carries_regulatory_detail(licensed_card: Card) -> None:
 
     assert "SFC CE No. AAA000" in vcf
     assert "Entity CE No. BBB111" in vcf
-    assert "Type 1 Dealing in Securities" in vcf
     assert "ADR;TYPE=WORK" in vcf
+    # Descriptions, not codes. The approved 8/10 card dropped the 1/4/9 numbering, and a
+    # vCard note is the one place it could sneak back into someone's phone unnoticed.
+    assert "Dealing in Securities" in vcf
+    assert "Type 1" not in vcf
+    assert "第 1 类" not in vcf
 
 
 def test_multiple_numbers_keep_their_labels(licensed_card: Card) -> None:
@@ -144,4 +139,12 @@ def test_a_correct_licensed_card_validates() -> None:
     card = Card.model_validate(_licensed_payload())
     assert card.licence is not None
     assert card.licence.ce_number is None  # optional: unconfirmed shows nothing
-    assert card.licence.types == []  # Type 1/4/9 no longer printed
+    assert card.licence.types == []
+
+
+def test_licensed_card_without_a_ce_number_still_names_the_licensee() -> None:
+    """"有则完整呈现，无则删除" in one assertion: the unconfirmed personal number renders as
+    nothing, while the licensed corporation — which is confirmed — still appears."""
+    vcf = render_vcard(Card.model_validate(_licensed_payload()), "en")
+    assert "SFC CE No." not in vcf
+    assert "Ark Group Holdings (Hong Kong) Limited" in vcf

@@ -35,6 +35,7 @@
   },
   "licence": {
     "ceNumber": null,
+    "types": [],
     "entityCeNumber": "AYC880",
     "entity": {
       "en": "Ark Group Holdings (Hong Kong) Limited",
@@ -44,14 +45,13 @@
       "en": "Securities and Futures Commission (SFC)",
       "zh": "香港证监会"
     },
-    "types": [],
     "address": {
       "en": "34/F, Tower Two, Times Square, 1 Matheson Street, Causeway Bay, Hong Kong",
       "zh": "香港銅鑼灣勿地臣街一號時代廣場第 2 座 34 樓"
     }
   },
   "memberLine": {
-    "en": "A member firm of Noah (US: NOAH · HK: 6686)",
-    "zh": "诺亚控股成员企业（美股 NOAH · 港股 6686）"
+    "en": "A member of Noah Holdings (US: NOAH | HK: 6686)",
+    "zh": "诺亚控股成员企业（美股 NOAH | 港股 6686）"
   }
 }

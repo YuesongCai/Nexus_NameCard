@@ -105,7 +105,7 @@ Drop a file in `api/data/cards/`. No code change, no redeploy — the store relo
     "entityCeNumber": "AYC880",
     "entity": { "en": "Ark Group Holdings (Hong Kong) Limited", "zh": "…" },
     "regulator": { "en": "Securities and Futures Commission (SFC)", "zh": "香港证监会" },
-    "types": [],                   // Type 1/4/9 no longer printed — see below
+    "types": [],                   // descriptions only, no 1/4/9 codes — see below
     "address": { "en": "34/F, Tower Two, Times Square, …", "zh": "…" }
   },
   "memberLine": { "en": "A member firm of Noah (US: NOAH · HK: 6686)", "zh": "…" }
@@ -125,7 +125,7 @@ reaching a printer:
 | The licensee is **Ark Group Holdings (Hong Kong) Limited** | Nexus is a brand, not a licensed corporation. "Ark International" is a different name and was rejected by name. |
 | Email must be **@arkwealth.hk** | A Nexus address beside an SFC number implies Nexus holds the licence. |
 | The **Ark mark is mandatory** and reads **before** Nexus | It may be scaled down, never omitted. The licence belongs to Ark, so Ark leads. |
-| **No Type 1 / 4 / 9 breakdown** — CE number only | The type list has to be re-approved whenever someone's permissions change, and adds no reader benefit. |
+| **No 1 / 4 / 9 codes** — the activity descriptions stay | The codes have to be re-approved whenever someone's permissions change; "Dealing in Securities" tells a reader the same thing and does not. |
 
 The fifth rule is "有则完整呈现，无则删除": every licence field is optional, so a card shows
 what has been confirmed for that person and silently omits the rest. That is why
