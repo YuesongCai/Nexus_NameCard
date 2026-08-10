@@ -12,13 +12,13 @@ import { detectLang, t } from './i18n'
 import type { Card, Lang } from './types'
 import styles from './App.module.css'
 
-const DEFAULT_SLUG = 'grantpan'
+const DEFAULT_SLUG = 'frankxiao'
 
 /**
  * `/c/<slug>` is the QR target; anything else falls back to the company card.
  *
  * The deployment's base path is stripped first — on GitHub Pages the app lives under
- * `/Nexus_NameCard/`, so the real path is `/Nexus_NameCard/c/grantpan`.
+ * `/Nexus_NameCard/`, so the real path is `/Nexus_NameCard/c/frankxiao`.
  */
 function slugFromPath(): string {
   let path = window.location.pathname

@@ -3,8 +3,8 @@
  *
  * Two problems this solves on a static host:
  *
- * 1. **Deep links.** GitHub Pages has no SPA rewrite, so `/c/grantpan` would 404. Writing
- *    `c/grantpan/index.html` makes it a genuine page.
+ * 1. **Deep links.** GitHub Pages has no SPA rewrite, so `/c/frankxiao` would 404. Writing
+ *    `c/frankxiao/index.html` makes it a genuine page.
  * 2. **Link previews.** The whole point of this URL is being pasted into WhatsApp and
  *    LinkedIn. Crawlers don't run JS, so the card's own name and title are baked into each
  *    file's `<head>` — the same tags `web.py` injects when FastAPI serves the app.

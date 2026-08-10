@@ -85,29 +85,52 @@ Drop a file in `api/data/cards/`. No code change, no redeploy — the store relo
 
 ```jsonc
 {
-  "slug": "grantpan",              // the URL: /c/grantpan
-  "variant": "standard",           // "licensed" for SFC-registered staff (B-version card)
-  "coBrand": "ark",                // adds the Ark lockup beside the Nexus mark; null for none
-  "name":  { "en": "Grant Pan", "zh": "潘青" },
-  "title": { "en": "CEO, Hong Kong · Group CFO", "zh": "香港行政总裁 · 集团财务总监" },
-  "org":   { "en": "Nexus", "zh": "Nexus" },
+  "slug": "frankxiao",              // the URL: /c/frankxiao
+  "variant": "licensed",           // "standard" = A-version (no licensing shown at all)
+  "coBrand": "ark",                // Ark mark, ahead of Nexus. Mandatory on licensed cards.
+  "name":  { "en": "Frank Xiao", "zh": "肖程元" },
+  "title": { "en": "R&D Director - Nexus", "zh": "Nexus 研发总监" },
+  "org":   { "en": "Ark Group Holdings (Hong Kong) Limited", "zh": "…" },
   "contacts": {
     "whatsapp": "+85200000000",    // E.164; drives the wa.me link
     "phones": [{ "label": { "en": "Mobile", "zh": "手机" }, "value": "+852 0000 0000" }],
-    "email": "grant.pan@nexus.ai",
+    "email": "chengyuanxiao@arkwealth.hk",   // licensed cards: @arkwealth.hk, never a Nexus domain
     // WeChat has no add-friend URL, so the card carries what does work: an ID to copy,
     // and optionally an exported 个人二维码 to long-press inside WeChat's browser.
-    "wechat": { "id": "grantpan_nexus", "qr": null },
+    "wechat": { "id": null, "qr": null },
     "website": "https://noahnexus.ai"
   },
-  "licence": null,                 // "licensed" cards add ceNumber / entity / types / address
+  "licence": {                     // omit entirely (null) for an A-version card
+    "ceNumber": null,              // the person's own SFC number; null → the line is not shown
+    "entityCeNumber": "AYC880",
+    "entity": { "en": "Ark Group Holdings (Hong Kong) Limited", "zh": "…" },
+    "regulator": { "en": "Securities and Futures Commission (SFC)", "zh": "香港证监会" },
+    "types": [],                   // Type 1/4/9 no longer printed — see below
+    "address": { "en": "34/F, Tower Two, Times Square, …", "zh": "…" }
+  },
   "memberLine": { "en": "A member firm of Noah (US: NOAH · HK: 6686)", "zh": "…" }
 }
 ```
 
-Seeded: `grantpan` (default) and `nexus` (the company fallback at `/`). The licensed
-(B-version) shape is supported in code and covered by tests against a synthetic fixture —
-no real person's SFC registration is checked into this repo.
+Seeded: `frankxiao` (default) and `nexus` (the company fallback at `/`).
+
+### What compliance requires on a licensed card
+
+Set by Ark compliance on 2026-08-10. All four are enforced by validators in
+`api/src/nexus_card/models.py`, so a card that breaks one fails to load rather than
+reaching a printer:
+
+| Rule | Why |
+|---|---|
+| The licensee is **Ark Group Holdings (Hong Kong) Limited** | Nexus is a brand, not a licensed corporation. "Ark International" is a different name and was rejected by name. |
+| Email must be **@arkwealth.hk** | A Nexus address beside an SFC number implies Nexus holds the licence. |
+| The **Ark mark is mandatory** and reads **before** Nexus | It may be scaled down, never omitted. The licence belongs to Ark, so Ark leads. |
+| **No Type 1 / 4 / 9 breakdown** — CE number only | The type list has to be re-approved whenever someone's permissions change, and adds no reader benefit. |
+
+The fifth rule is "有则完整呈现，无则删除": every licence field is optional, so a card shows
+what has been confirmed for that person and silently omits the rest. That is why
+`ceNumber` is nullable — an unconfirmed number renders as nothing, never as a placeholder
+that reads as a claim.
 
 **vCard** is generated server-side (`/api/cards/<slug>/vcard`) rather than in the browser:
 iOS Safari is unreliable with `blob:` downloads, but a real `text/vcard` response opens the
@@ -226,9 +249,11 @@ No cookies, no PII, no question bodies; the session id is per-page-open and rand
   export is dropped at `web/public/wechat/<slug>.png` and `contacts.wechat.qr` points at
   it; until then the sheet degrades to the copy-ID path on its own. A placeholder QR is
   worse than none — it would scan to a dead URL.
-- **Grant Pan's phone number is the placeholder** `+852 0000 0000` carried over from the
-  concept deck, and `潘青` is inferred from the public Noah Holdings listing. Both need
-  confirming before print.
+- **Three fields on `frankxiao` are still placeholders** carried over from the 8.10 concept
+  deck: the phone number (`+852 0000 0000`, which also drives the WhatsApp link), the
+  WeChat ID (absent), and the personal SFC CE number (absent, so no personal SFC line
+  renders). The entity block — Ark Group Holdings (Hong Kong) Limited, CE AYC880, Times
+  Square address — is real. All three need confirming before print.
 - **`web/public/og-image.png` (1200×630) and `apple-touch-icon.png` (180×180) are not in the
   repo.** Both tags are omitted rather than pointed at a 404, so nothing is broken — link
   previews simply have no thumbnail and iOS uses a page snapshot for Add to Home Screen.

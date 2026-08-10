@@ -9,7 +9,7 @@ from nexus_card.models import Card
 
 def test_seed_cards_parse(store: CardStore) -> None:
     slugs = store.slugs()
-    assert "grantpan" in slugs
+    assert "frankxiao" in slugs
     for slug in slugs:
         store.get(slug)
 
@@ -26,21 +26,32 @@ def test_slug_traversal_rejected(store: CardStore, evil: str) -> None:
 
 
 def test_vcard_carries_the_essentials(store: CardStore) -> None:
-    card = store.get("grantpan")
+    card = store.get("frankxiao")
     vcf = render_vcard(card, "en")
 
     assert vcf.startswith("BEGIN:VCARD\r\nVERSION:3.0")
     assert vcf.rstrip().endswith("END:VCARD")
-    assert "FN:Grant Pan 潘青" in vcf
-    assert "TITLE:CEO\\, Hong Kong · Group CFO" in vcf
-    assert "grant.pan@nexus.ai" in vcf
+    assert "FN:Frank Xiao 肖程元" in vcf
+    assert "TITLE:R&D Director - Nexus" in vcf
+    assert "chengyuanxiao@arkwealth.hk" in vcf
     assert "wa.me/85200000000" in vcf
 
 
 def test_unlicensed_vcard_has_no_regulatory_note(store: CardStore) -> None:
-    vcf = render_vcard(store.get("grantpan"), "en")
+    vcf = render_vcard(store.get("nexus"), "en")
     assert "SFC CE No." not in vcf
     assert "ADR;" not in vcf
+
+
+def test_card_without_a_confirmed_ce_number_omits_the_personal_line(
+    store: CardStore,
+) -> None:
+    """"有则完整呈现，无则删除" — an unconfirmed CE number is shown as nothing, never as a
+    placeholder. The licensed corporation still appears, because that fact is confirmed."""
+    vcf = render_vcard(store.get("frankxiao"), "en")
+    assert "SFC CE No." not in vcf
+    assert "Ark Group Holdings (Hong Kong) Limited" in vcf
+    assert "Entity CE No. AYC880" in vcf
 
 
 def test_licensed_vcard_carries_regulatory_detail(licensed_card: Card) -> None:
@@ -67,6 +78,70 @@ def test_vcard_lines_respect_the_fold(licensed_card: Card, lang: str) -> None:
 
 
 def test_vcard_filename_is_ascii(store: CardStore) -> None:
-    name = vcard_filename(store.get("grantpan"))
-    assert name == "Grant-Pan.vcf"
+    name = vcard_filename(store.get("frankxiao"))
+    assert name == "Frank-Xiao.vcf"
     name.encode("ascii")
+
+
+# ------------------------------------------------------- compliance guardrails
+#
+# Rules from compliance (Gino, 2026-08-10). They are combination rules — a licence block
+# next to the wrong logo, or next to the wrong email domain — so nothing catches them
+# field-by-field, and nothing catches them by eye months later. Failing at load time means
+# a bad card cannot reach a printer or a QR code.
+
+
+def _licensed_payload(**overrides: object) -> dict:
+    payload = {
+        "slug": "compliance-probe",
+        "variant": "licensed",
+        "coBrand": "ark",
+        "name": {"en": "Probe", "zh": "探针"},
+        "title": {"en": "RM", "zh": "客户经理"},
+        "org": {"en": "Ark Group Holdings (Hong Kong) Limited", "zh": "Ark"},
+        "contacts": {"email": "probe@arkwealth.hk", "phones": []},
+        "licence": {
+            "entity": {
+                "en": "Ark Group Holdings (Hong Kong) Limited",
+                "zh": "Ark Group Holdings (Hong Kong) Limited",
+            },
+            "regulator": {"en": "SFC", "zh": "香港证监会"},
+        },
+    }
+    payload.update(overrides)  # type: ignore[arg-type]
+    return payload
+
+
+def test_licensed_card_must_carry_the_ark_mark() -> None:
+    with pytest.raises(ValueError, match="Ark mark is mandatory"):
+        Card.model_validate(_licensed_payload(coBrand=None))
+
+
+def test_licensed_card_rejects_a_nexus_email_domain() -> None:
+    with pytest.raises(ValueError, match="licensed corporation's domain"):
+        Card.model_validate(
+            _licensed_payload(contacts={"email": "someone@nexus.ai", "phones": []})
+        )
+
+
+@pytest.mark.parametrize(
+    "wrong",
+    ["Ark International (Hong Kong) Limited", "Nexus (Hong Kong) Limited"],
+)
+def test_licensed_entity_must_be_the_actual_licensee(wrong: str) -> None:
+    with pytest.raises(ValueError):
+        Card.model_validate(
+            _licensed_payload(
+                licence={
+                    "entity": {"en": wrong, "zh": wrong},
+                    "regulator": {"en": "SFC", "zh": "香港证监会"},
+                }
+            )
+        )
+
+
+def test_a_correct_licensed_card_validates() -> None:
+    card = Card.model_validate(_licensed_payload())
+    assert card.licence is not None
+    assert card.licence.ce_number is None  # optional: unconfirmed shows nothing
+    assert card.licence.types == []  # Type 1/4/9 no longer printed

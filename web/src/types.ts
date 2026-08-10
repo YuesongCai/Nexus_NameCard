@@ -19,7 +19,9 @@ export interface LicenceType {
 }
 
 export interface Licence {
-  ceNumber: string
+  /** The person's own SFC central entity number. Absent when it has not been confirmed —
+   *  the card then shows the licensed corporation only, never a placeholder number. */
+  ceNumber?: string | null
   entityCeNumber?: string
   entity: Localized
   regulator: Localized

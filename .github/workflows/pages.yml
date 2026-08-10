@@ -27,7 +27,7 @@ jobs:
       VITE_STATIC: '1'
       VITE_BASE: /Nexus_NameCard/
       VITE_SITE_URL: https://yuesongcai.github.io
-      VITE_DEFAULT_SLUG: grantpan
+      VITE_DEFAULT_SLUG: frankxiao
     steps:
       - uses: actions/checkout@v4
 

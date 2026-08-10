@@ -75,9 +75,9 @@ async def test_stream_emits_protocol_order(
 ) -> None:
     provider = _StubProvider()
     service = ChatService(settings, retriever, provider)
-    request = ChatRequest(question="What is Nexus?", lang="en", slug="grantpan")
+    request = ChatRequest(question="What is Nexus?", lang="en", slug="frankxiao")
 
-    frames = await _collect(service, request, store.get("grantpan"))
+    frames = await _collect(service, request, store.get("frankxiao"))
     types = [f["type"] for f in frames]
 
     assert types[0] == "response.created"
@@ -93,9 +93,9 @@ async def test_sources_are_deduped_and_localised(
     settings: Settings, retriever: Retriever, store: CardStore
 ) -> None:
     service = ChatService(settings, retriever, _StubProvider())
-    request = ChatRequest(question="Nexus 收费吗？", lang="zh", slug="grantpan")
+    request = ChatRequest(question="Nexus 收费吗？", lang="zh", slug="frankxiao")
 
-    frames = await _collect(service, request, store.get("grantpan"))
+    frames = await _collect(service, request, store.get("frankxiao"))
     sources = next(f for f in frames if f["type"] == "response.sources")["sources"]
 
     ids = [s["id"] for s in sources]
@@ -108,16 +108,16 @@ async def test_llm_failure_degrades_to_handoff(
     settings: Settings, retriever: Retriever, store: CardStore
 ) -> None:
     service = ChatService(settings, retriever, _StubProvider(fail=True))
-    request = ChatRequest(question="What is Nexus?", lang="zh", slug="grantpan")
+    request = ChatRequest(question="What is Nexus?", lang="zh", slug="frankxiao")
 
-    frames = await _collect(service, request, store.get("grantpan"))
+    frames = await _collect(service, request, store.get("frankxiao"))
     assert frames[-1]["type"] == "response.completed"
 
     answer = "".join(f["delta"] for f in frames if f["type"] == "response.output_text.delta")
     # The visitor gets a route to a human, not an empty bubble or a stack trace — and the
     # route is to a role, never to the card holder by name.
     assert "客户代表" in answer
-    assert "潘青" not in answer
+    assert "肖程元" not in answer
 
 
 async def test_history_is_trimmed(retriever: Retriever) -> None:
@@ -149,7 +149,7 @@ def test_prompt_carries_guardrails_and_context(licensed_card: Card) -> None:
 
 
 def test_prompt_flags_unlicensed_holder(store: CardStore) -> None:
-    prompt = build_system_prompt(store.get("grantpan"), "en", "")
+    prompt = build_system_prompt(store.get("nexus"), "en", "")
     assert "not an SFC-licensed representative" in prompt
     # No retrieved context → the prompt must forbid guessing.
     assert "Do not guess" in prompt
@@ -161,7 +161,7 @@ def test_prompt_never_leaks_the_holder_identity(
     """The bot speaks as Nexus. The holder's name, title and contact details are on the
     page above the chat; putting them in the prompt only invites "go ask <name>", which
     reads as presumptuous to a stranger who just scanned a card."""
-    for card in (licensed_card, store.get("grantpan")):
+    for card in (licensed_card, store.get("frankxiao")):
         for lang in ("en", "zh"):
             prompt = build_system_prompt(card, lang, "[1] ctx")
             for leaked in (
@@ -169,7 +169,7 @@ def test_prompt_never_leaks_the_holder_identity(
                 card.name.zh,
                 card.title.en,
                 card.contacts.email or "\x00",
-                (card.licence.ce_number if card.licence else "\x00"),
+                (card.licence.ce_number if card.licence else None) or "\x00",
             ):
                 assert leaked not in prompt, f"{leaked!r} leaked into the {lang} prompt"
 

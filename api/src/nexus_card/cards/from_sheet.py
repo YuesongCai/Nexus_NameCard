@@ -166,15 +166,23 @@ def build_card(row: dict[str, str], problems: list[str]) -> dict[str, Any] | Non
             en, zh = SFC_TYPES[code]
             types.append({"code": code, "en": en, "zh": zh})
 
+        # 持牌类别 is optional as of 2026-08-10: compliance dropped Type 1/4/9 from the
+        # printed card, so an empty column is now the expected case rather than a mistake.
+        # The CE number stays mandatory — it is the one thing that identifies the person.
         if not get("ce_number"):
             problems.append(f"{who}: B 版但没有 SFC 中央编号")
-        if not types:
-            problems.append(f"{who}: B 版但没有持牌类别")
+
+        entity = get("entity_en") or "Ark Group Holdings (Hong Kong) Limited"
+        if "nexus" in entity.lower() or "international" in entity.lower():
+            problems.append(
+                f"{who}: 持牌法团只能是 Ark Group Holdings (Hong Kong) Limited"
+                f"（不是 Nexus，也不是 International）: {entity!r}"
+            )
 
         card["licence"] = {
-            "ceNumber": get("ce_number"),
+            "ceNumber": get("ce_number") or None,
             "entityCeNumber": get("entity_ce") or None,
-            "entity": {"en": get("entity_en"), "zh": get("entity_en")},
+            "entity": {"en": entity, "zh": entity},
             "regulator": {"en": "SFC", "zh": "香港证监会"},
             "types": types,
             "address": {"en": get("addr_en"), "zh": get("addr_zh")},

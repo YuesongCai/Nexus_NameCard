@@ -29,16 +29,30 @@ export function Footer({ card, lang }: { card: Card; lang: Lang }) {
               </>
             )}
 
-            <dt>{pick(licence.regulator, lang)}</dt>
-            <dd>
-              {licence.types
-                .map((type) =>
-                  lang === 'zh'
-                    ? `第 ${type.code} 类 ${type.zh}`
-                    : `Type ${type.code} ${type.en}`,
-                )
-                .join(lang === 'zh' ? '、' : ' · ')}
-            </dd>
+            {licence.ceNumber && (
+              <>
+                <dt>{t(lang, 'ceNumber')}</dt>
+                <dd className={styles.mono}>{licence.ceNumber}</dd>
+              </>
+            )}
+
+            {/* Only rendered for a card that still carries a type breakdown. The default
+                since 2026-08-10 is no types at all, and an empty <dd> under the regulator's
+                name reads as "licensed for nothing". */}
+            {licence.types.length > 0 && (
+              <>
+                <dt>{pick(licence.regulator, lang)}</dt>
+                <dd>
+                  {licence.types
+                    .map((type) =>
+                      lang === 'zh'
+                        ? `第 ${type.code} 类 ${type.zh}`
+                        : `Type ${type.code} ${type.en}`,
+                    )
+                    .join(lang === 'zh' ? '、' : ' · ')}
+                </dd>
+              </>
+            )}
 
             {licence.address && (
               <>

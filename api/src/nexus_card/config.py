@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     cards_dir: Path = _API_ROOT / "data" / "cards"
     index_path: Path = _API_ROOT / "data" / "kb_index.json"
     web_dist_dir: Path = _API_ROOT.parent / "web" / "dist"
-    default_card_slug: str = "grantpan"
+    default_card_slug: str = "frankxiao"
 
     # --- LLM provider: bedrock | anthropic | agentkit | echo ---
     llm_provider: str = "bedrock"

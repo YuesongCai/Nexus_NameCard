@@ -87,7 +87,8 @@ def render_vcard(card: Card, lang: Lang = "en") -> str:
             f"Type {t.code} {t.zh if zh_first else t.en}" for t in card.licence.types
         )
         entity = card.licence.entity.zh if zh_first else card.licence.entity.en
-        note_parts.append(f"SFC CE No. {card.licence.ce_number}")
+        if card.licence.ce_number:
+            note_parts.append(f"SFC CE No. {card.licence.ce_number}")
         if types:
             note_parts.append(types)
         note_parts.append(entity)
