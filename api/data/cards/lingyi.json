@@ -1,0 +1,57 @@
+{
+  "slug": "lingyi",
+  "variant": "licensed",
+  "coBrand": "ark",
+  "name": {
+    "en": "Yi Ling",
+    "zh": "凌毅"
+  },
+  "title": {
+    "en": "Senior Manager - Nexus",
+    "zh": "Nexus 高级经理"
+  },
+  "org": {
+    "en": "Ark Group Holdings (Hong Kong) Limited",
+    "zh": "Ark Group Holdings (Hong Kong) Limited"
+  },
+  "contacts": {
+    "whatsapp": "+85259318233",
+    "phones": [
+      {
+        "label": {
+          "en": "Mobile",
+          "zh": "手机"
+        },
+        "value": "+852 5931 8233"
+      }
+    ],
+    "email": "lingyi@arkwealth.hk",
+    "linkedin": null,
+    "website": "https://noahnexus.ai",
+    "wechat": {
+      "id": null,
+      "qr": null
+    }
+  },
+  "licence": {
+    "ceNumber": "BYM566",
+    "types": [],
+    "entityCeNumber": "AYC880",
+    "entity": {
+      "en": "Ark Group Holdings (Hong Kong) Limited",
+      "zh": "Ark Group Holdings (Hong Kong) Limited"
+    },
+    "regulator": {
+      "en": "Securities and Futures Commission (SFC)",
+      "zh": "香港证监会"
+    },
+    "address": {
+      "en": "34/F, Tower Two, Times Square, 1 Matheson Street, Causeway Bay, Hong Kong",
+      "zh": "香港銅鑼灣勿地臣街一號時代廣場第 2 座 34 樓"
+    }
+  },
+  "memberLine": {
+    "en": "A member of Noah Holdings (US: NOAH | HK: 6686)",
+    "zh": "诺亚控股成员企业（美股 NOAH | 港股 6686）"
+  }
+}
