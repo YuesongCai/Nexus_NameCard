@@ -98,7 +98,12 @@ class SpaHost:
             )
 
         markup = self._index_html()
-        card = self.cards.try_get(slug) or self.cards.try_get(self.default_slug)
+        # An unknown slug must not borrow a real person's name for its title and link preview:
+        # it gets the company card, and only the bare root falls back to the default person.
+        if slug:
+            card = self.cards.try_get(slug) or self.cards.try_get("nexus")
+        else:
+            card = self.cards.try_get(self.default_slug)
         if card is not None:
             tags = _meta_tags(card, self.base_url)
             # Drop the placeholder <title> so we don't ship two.
